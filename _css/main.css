@@ -1,0 +1,284 @@
+:root {
+    --questionColor: #7f34ff;
+    --reponseColor: #88AED3;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Calibri;
+    color: #000;
+}
+
+body {
+    background: linear-gradient(#EE8, #AA3);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+#chat section {
+    display: flex;
+    flex-direction: column;
+}
+
+#chat section span {
+    background: #66E;
+    margin: 1px;
+}
+
+#gain ul li.bad {
+    background: #F00;
+}
+
+#gain ul li.good {
+    background-color: #0F0;
+}
+
+.container {
+    width: 1080px;
+    height: 100vh;
+    margin: 0 auto;
+    border: 1px solid #000;
+    display: grid;
+    grid-template-areas: 'header header'
+        'manche manche'
+        'main chat'
+        'footer footer'
+        'console console';
+    grid-template-columns: 70% 30%;
+    grid-template-rows: 17% 18% 57% 3% 4%;
+}
+
+footer {
+    border-bottom: 1px solid #000;
+}
+
+[g_area=console] {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+[g_area=console]>div {
+    background: #222;
+    width: 50%;
+    display: flex;
+}
+#gain>div>span:first-of-type{
+    color: #FFF;
+    width: 300px;
+    display: block;
+    background: #385AAA;
+    text-align: center;
+}
+#manche {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: #222;
+}
+
+#manche>div {
+    display: flex;
+}
+
+#manche h3 {
+    color: #FFF;
+    background: #33E;
+    width: 25%;
+    margin: 2px;
+    padding: 3px;
+    border-radius: 0 15px;
+}
+
+#manche [player] span {
+    color: #FFF;
+}
+
+#manche>div section {
+    width: 50%;
+}
+
+#manche>div section ul {
+    display: flex;
+    list-style: none;
+}
+
+#manche>div section ul li {
+    width: 20px;
+    background: #FFF;
+    border-radius: 50%;
+    margin: 5px;
+}
+
+#manche>div section ul li.win {
+    background: #0F0
+}
+
+#gain,
+#question {
+    display: flex;
+    width: 75%;
+    background: #333;
+    margin: 15px;
+    flex-direction: column;
+}
+
+header .player {
+    width: 95px;
+    height: 100%;
+    border-radius: 50%;
+    background: #333;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+header .player img {
+    width: 100%;
+    height: 100%;
+    border-radius: 25%/10% 0% 10% 0%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+header .player span {
+    z-index: 2;
+    align-self: end;
+    font-size: 1.8em;
+    background: #555B;
+    padding: 4px;
+    border-radius: 50%/25%;
+}
+
+header {
+    display: flex;
+    justify-content: space-around;
+}
+
+#gain {
+    width: 45%;
+    position: relative;
+}
+
+#joker {
+    display: none;
+}
+
+#gain ul {
+    display: flex;
+    width: 450px;
+    flex-wrap: wrap;
+}
+
+#gain ul li {
+    display: inline-block;
+    background: #FFF;
+    border-radius: 10px;
+    height: 10px;
+    width: 25px;
+    margin: 5px;
+}
+
+.current ol li.answer {
+    background: #AA3;
+}
+
+#gain div {
+    display: flex;
+    padding: 5px;
+    margin: 2px;
+}
+
+.prct {
+    border: 1px solid #000;
+    display: inline-block;
+    width: 50px;
+    text-align: center;
+    color: #FFF;
+    font-size: 1.2rem;
+}
+
+.questionElement {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    align-content: center;
+    padding: 5px;
+    display: none;
+}
+
+.questionElement.current {
+    display: flex;
+}
+
+.questionElement p {
+    background: var(--questionColor);
+    color: #FFF;
+    padding: 5px;
+    margin: 4px;
+}
+
+.questionElement ol {
+    display: flex;
+    flex-direction: row;
+    list-style: upper-alpha;
+    list-style-position: outside;
+    flex-wrap: wrap;
+    list-style-position: inside;
+}
+
+.questionElement ol li {
+    width: 49%;
+    height: 26px;
+    background: var(--reponseColor);
+    margin: 1px;
+    transition: 1.2s;
+}
+
+.questionElement section {
+    width: 225px;
+    background: linear-gradient(45deg, var(--mainColor), #833);
+    position: absolute;
+    bottom: 0;
+    right: 3px;
+    padding: 11px;
+    font-size: 1.2rem;
+    filter: drop-shadow(8px 7px 5px #000);
+    z-index: 4;
+}
+.profilBadge {
+    width: 126px;
+    height: 125PX;
+    border-radius: 50%;
+    position: absolute;
+    right: 5PX;
+    TOP: 5PX;
+}
+.deathMatch{
+    position: absolute;
+    width: 45%;
+    height: 250px;
+    background: #385AAA;
+    top: 28%;
+    left: 25%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    z-index: 10;
+}
+.deathMatch h3{
+    font-size: 2.1em;
+  background: #AAF;
+  filter: drop-shadow(0px 6px 5px #333);
+  width: 100%;
+  height: 39px;
+}
+.deathMatch section{height: 80%;background: #333;}
+.deathMatch section span{
+    align-self: flex-start;
+}

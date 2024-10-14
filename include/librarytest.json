@@ -1,0 +1,110 @@
+{
+    "manche1": [
+        {
+            "theme": "cinema",
+            "question": "Question de cinema 1",
+            "choix": [
+                "reponse 1",
+                "reponse 2",
+                "reponse 3",
+                "reponse 4"
+            ],
+            "reponse":0
+        },
+        {
+            "theme": "musique",
+            "question": "Question de musique 1",
+            "choix": [
+                "reponse 1",
+                "reponse 2",
+                "reponse 3",
+                "reponse 4"
+            ],
+            "reponse":1
+        },{
+            "theme": "sport",
+            "question": "Question de sport 1",
+            "choix": [
+                "reponse 1",
+                "reponse 2",
+                "reponse 3",
+                "reponse 4"
+            ],
+            "reponse":2
+        },{
+            "theme": "série",
+            "question": "Question de série 1",
+            "choix": [
+                "reponse 1",
+                "reponse 2",
+                "reponse 3",
+                "reponse 4"
+            ],
+            "reponse":3
+        },{
+            "theme": "jeux videos",
+            "question": "Question de jeux videos 1",
+            "choix": [
+                "reponse 1",
+                "reponse 2",
+                "reponse 3",
+                "reponse 4"
+            ],
+            "reponse":0
+        }
+    ],
+    "manche2":[
+        {
+            "theme": "cinema",
+            "question": "Question de cinema 2",
+            "choix": [
+                "reponse 1",
+                "reponse 2",
+                "reponse 3",
+                "reponse 4"
+            ],
+            "reponse":0
+        },
+        {
+            "theme": "musique",
+            "question": "Question de musique 2",
+            "choix": [
+                "reponse 1",
+                "reponse 2",
+                "reponse 3",
+                "reponse 4"
+            ],
+            "reponse":1
+        },{
+            "theme": "sport",
+            "question": "Question de sport 2",
+            "choix": [
+                "reponse 1",
+                "reponse 2",
+                "reponse 3",
+                "reponse 4"
+            ],
+            "reponse":2
+        },{
+            "theme": "série",
+            "question": "Question de série 2",
+            "choix": [
+                "reponse 1",
+                "reponse 2",
+                "reponse 3",
+                "reponse 4"
+            ],
+            "reponse":3
+        },{
+            "theme": "jeux videos",
+            "question": "Question de jeux videos 2",
+            "choix": [
+                "reponse 1",
+                "reponse 2",
+                "reponse 3",
+                "reponse 4"
+            ],
+            "reponse":0
+        }
+    ]
+}
