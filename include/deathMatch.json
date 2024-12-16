@@ -22,6 +22,38 @@
         "reponse": 1
     },
     {
+        "theme": "Manga",
+        "question": "Dans la saga dragon ball, qui est Baba pour Kame Sennin",
+        "choix": [
+            "Sa soeur",
+            "Sa tante",
+            "Sa Nièce",
+            "Sa grand mère"
+        ],
+        "reponse": 0
+    },{
+        "theme":"Manga",
+        "question":"Dans la saga Dragon Ball, qui utilise pour la première fois la technique du Kame Hame Ha",
+        "choix":[
+            "Kame Sennin",
+            "Son Goku",
+            "Son Gohan",
+            "Krilin"
+        ],
+        "reponse":0
+    },
+    {
+        "theme": "Manga",
+        "question": "Dans le premier arc naratif de dragon ball quelle boule de cristale Kame Sennin (tortue géniale) offre t-il au duo Goku et Bulma",
+        "choix": [
+            "La boule à 4 étoiles",
+            "la boule à 3 étoiles",
+            "la boule à 6 étoiles",
+            "la boule à 2 étoiles"
+        ],
+        "reponse": 1
+    },
+    {
         "theme": "Jeux Vidéos",
         "question": "Comment s'appelle la première zone du jeu Sonic 2 sortie sur megadrive",
         "choix": [

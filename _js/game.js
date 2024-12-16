@@ -3,6 +3,7 @@ class Player {
         this.name = name;
         this.container = container;
         this.score = 0;
+        this.winMatch = 0;
         this.vote = {
             "A": [],
             "B": [],
@@ -54,9 +55,11 @@ class Game {
         this.console = document.getElementById("console");
         this.container = container;
         this.lib = [];
+        this.checked=false;
+        this.deathMatchOn = false;
         this.currentQuery = [],
-        this.deathMatch=[],
-        this.index = 0;
+            this.deathMatch = [],
+            this.index = 0;
         this.manche = 0;
         this.canVote = false;
         this.player = [
@@ -66,36 +69,59 @@ class Game {
         this.bot = new GameBot("GAMEBOT", [player1, player2]);
         this.name = name
     }
-    /*
-    checkReponse() {
-       
-
-        setTimeout(() => {
-            let alpha = "ABCD";
-            this.console.innerHTML=this.player[0].rep.length;
-            if (this.player[0].rep.length==0 && alpha.indexOf(Object.keys(this.player[0].getReponse())) == this.currentQuery[this.index].reponse) {
-                this.player[0].score++;
-                document.querySelectorAll("#gain_" + this.player[0].name + " ul li:not([class])")[0].classList.add("good")
-            } else {
-                document.querySelectorAll("#gain_" + this.player[0].name + " ul li:not([class])")[0].classList.add("bad")
-            }
-            if (this.player[1].rep.length==0 != false && alpha.indexOf(Object.keys(this.player[1].getReponse())) == this.currentQuery[this.index].reponse) {
-                this.player[1].score++;
-                document.querySelectorAll("#gain_" + this.player[1].name + " ul li:not([class])")[0].classList.add("good")
-            } else {
-                document.querySelectorAll("#gain_" + this.player[1].name + " ul li:not([class])")[0].classList.add("bad")
-            }
-        }, 2000)
-    }*/
-    checkReponse() {
-        document.querySelectorAll(".current ol li")[this.currentQuery[this.index].reponse].classList.add("answer");
+    DMCheckReponse() {
+        if (!this.deathMatchOn) {
+            console.error("Pas de deathMatch");
+            return;
+        }
+        document.querySelectorAll(".DM_question ol li")[this.deathMatch[this.index].reponse].classList.add("answer");
         function delay(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
         delay(2000).then(() => {
             let alpha = "ABCD";
-         //   this.console.innerHTML = this.player[0].rep.length;
+           
+            let p1 = (this.player[0].rep.length > 0 && alpha.indexOf(Object.keys(this.player[0].getReponse())) == this.deathMatch[this.index].reponse);
+            let p2 = (this.player[1].rep.length > 0 && alpha.indexOf(Object.keys(this.player[1].getReponse())) == this.deathMatch[this.index].reponse);
+
+            if (p1 == p2) {
+                this.index++;
+                this.player.forEach(p => {
+                    p.reset();
+                })
+                this.nextQuestion();
+                this.updateConfig();
+                ctrl.check.style.display = "block";
+                document.querySelectorAll('.deathMatch>section[player] ul').forEach(el => {
+                    el.innerHTML += "<li class='bad'></li>";
+                });
+            } else {
+                if (p1)
+                    document.querySelectorAll("#manche>div section[player=\"" + this.player[0].name + "\"] ul li")[this.manche - 1].classList.add("win")
+                else
+                    document.querySelectorAll("#manche>div section[player=\"" + this.player[1].name + "\"] ul li")[this.manche - 1].classList.add("win")
+                this.deathMatchOn = false;
+                document.querySelector(".deathMatch").style.display = "none";
+                ctrl.startVote.style.display = "block";
+                chat.clear();
+                this.nextManche();
+            }
+        })
+        
+
+    }
+    checkReponse() {
+        
+        document.querySelectorAll(".current ol li")[this.currentQuery[this.index].reponse].classList.add("answer");
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        delay(2000).then(() => {
+            this.checked=true;
+            let alpha = "ABCD";
+            //   this.console.innerHTML = this.player[0].rep.length;
 
             // Joueur 1
             if (this.player[0].rep.length > 0 && alpha.indexOf(Object.keys(this.player[0].getReponse())) == this.currentQuery[this.index].reponse) {
@@ -112,14 +138,20 @@ class Game {
             } else {
                 document.querySelectorAll("#gain_" + this.player[1].name + " ul li:not([class])")[0].classList.add("bad");
             }
+            this.updateConfig();
         });
 
     }
-    setDeathMatch(){
-        document.querySelector(".deathMatch").style.display="flex";
+    setDeathMatch() {
+        document.querySelector(".deathMatch").style.display = "flex";
+        this.deathMatchOn = true;
+        this.index = 0;
         console.dir(this.deathMatch);
+        this.updateConfig();
+        this.nextQuestion();
+
     }
-    getDeathMatch=async function(){
+    getDeathMatch = async function () {
         const url = ("include/deathMatch.json")
         const response = await fetch(url);
         if (!response.ok) {
@@ -156,14 +188,15 @@ class Game {
         this.player.forEach((el, index) => {
             document.querySelectorAll('#manche>div section')[index].setAttribute("player", el.name)
             document.querySelectorAll('#manche>div section')[index].children[0].innerText = el.name;
-            document.querySelectorAll('.deathMatch>section')[index].setAttribute("player", el.name)
-            document.querySelectorAll('.deathMatch>section')[index].children[0].innerText = el.name;
+            document.querySelectorAll('.deathMatch>section[player]')[index].setAttribute("player", el.name)
+            document.querySelectorAll('.deathMatch>section[player]')[index].children[0].innerText = el.name;
             getLiveInformation(el.name).then((data) => {
                 let img = document.createElement("img");
                 img.src = (data.channel.profile_image_url);
                 document.getElementById(el.container).appendChild(img);
             });
         })
+        this.updateConfig();
         this.bot.openBot();
     }
     generateGain() {
@@ -190,6 +223,10 @@ class Game {
     emulateReponse(channel, user, vote) {
         let p = this.getPlayer(channel);
         p.vote[vote].push(user);
+        p.rep.push(user);
+        chat.addMessage(`${user} pour ${channel}`);
+        console.dir(this.getPlayer(channel));
+        p.getPercent();
     }
     nextManche() {
 
@@ -226,36 +263,108 @@ class Game {
             this.container.appendChild(divQuestion);
         });
         this.questionContainer = document.querySelectorAll(".questionElement");
-        this.console.innerHTML="Theme de la question "+this.currentQuery[this.index+1].theme;
+        this.console.innerHTML = "Theme de la question " + this.currentQuery[this.index + 1].theme;
         this.nextQuestion();
+    }
+    updateVote=async function(){
+        let data= {
+            player1:{
+                name:this.player[0].name,
+                votes:this.player[0].vote
+            },
+            player2:{
+                name:this.player[1].name,
+                votes:this.player[1].vote
+            }
+        }
+        let response = await fetch('ajax.php?act=updateVote', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(data)
+        });
+        let result = await response.json();
+        return (result.message);
+    }
+    updateConfig = async function () {
+        let data = {
+            indexQuestion: this.index,
+            indexManche: this.manche,
+            deathMatch:this.deathMatchOn,
+            rep:this.checked
+        }
+        let response = await fetch('ajax.php?act=update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(data)
+        });
+        let result = await response.json();
+        return (result.message);
+    }
+    updateGlobalConfig= async function(){
+        let data = {
+           data:this
+        }
+        let response = await fetch('ajax.php?act=updateGlobal', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(data)
+        });
+        let result = await response.json();
+        return (result.message);
     }
     getQuestions() {
         return this.lib[`manche${this.manche}`];
     }
     nextQuestion() {
+        this.checked=false;
+        if (this.deathMatchOn) {
+            document.querySelector(".DM_question p").innerHTML = this.deathMatch[this.index].question;
+            let list = document.querySelector(".DM_question ol");
+            list.innerHTML = "";
+            this.deathMatch[this.index].choix.forEach(el => {
+                let line = document.createElement("li");
+                line.innerHTML = el;
+                list.appendChild(line);
+            })
+            let rep = document.querySelectorAll(".DM_question ol li");
+            rep.forEach(el => {
+                el.style.opacity = 0;
+            })
+            var timeOutQuestion = setTimeout(() => {
+                this.displayReponse(timeOutQuestion, rep);
+            }, 2000);
+        } else {
+            if (this.index + 1 == 5) {
+                return false;
+            }
 
-        if (this.index + 1 == 5) {
-            return false;
+            this.questionContainer.forEach(el => {
+
+                el.classList.remove("current");
+            });
+            this.player.forEach(p => {
+                p.reset();
+            })
+            this.canVote = false;
+            this.index++;
+            this.questionContainer[this.index].classList.add("current");
+            let rep = document.querySelectorAll(".questionElement.current ol li");
+            rep.forEach(el => {
+                el.style.opacity = 0;
+            })
+            var timeOutQuestion = setTimeout(() => {
+                this.displayReponse(timeOutQuestion, rep);
+            }, 2000);
+            this.updateConfig();
+            this.updateVote();
+            return true;
         }
-
-        this.questionContainer.forEach(el => {
-
-            el.classList.remove("current");
-        });
-        this.player.forEach(p => {
-            p.reset();
-        })
-        this.canVote = false;
-        this.index++;
-        this.questionContainer[this.index].classList.add("current");
-        let rep = document.querySelectorAll(".questionElement.current ol li");
-        rep.forEach(el => {
-            el.style.opacity = 0;
-        })
-        var timeOutQuestion = setTimeout(() => {
-            this.displayReponse(timeOutQuestion, rep);
-        }, 2000);
-        return true;
     }
     displayReponse(timeOut, rep) {
         let i = 0;

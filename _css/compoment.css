@@ -26,12 +26,20 @@
   background:none;
 
 }
+.module .container input{
+  padding:5px;
+}
 .module .container{
   width: 100%;
   height: auto;
   background: #555;
   display: flex;
   border: none;
+  flex-wrap: wrap;
+}
+.module .container div{
+  width: 100%;
+  background:#069
 }
 button {
   width: 45%;
