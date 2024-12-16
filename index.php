@@ -9,7 +9,7 @@ $p2 = "5ch00lw3b";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Duel</title>
+    <title>Le Duel des chaînes</title>
     <link rel="stylesheet" href="_css/main.css">
     <link rel="stylesheet" href="_css/compoment.css">
     <script src="_js/main.js"></script>
@@ -24,10 +24,21 @@ $p2 = "5ch00lw3b";
         <h3>Death Match</h3>
         <section player="">
             <span>P1</span>
+            <prct></prct>
             <ul></ul>
+        </section>
+        <section class="DM_question">
+            <p></p>
+            <ol>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ol>
         </section>
         <section player="">
             <span>P2</span>
+            <prct></prct>
             <ul></ul>
         </section>
     </div>
@@ -38,7 +49,7 @@ $p2 = "5ch00lw3b";
                     <?php echo $p1; ?>
                 </span>
             </div>
-            <h1>Le Duel des chats</h1>
+            <h1>Le Duel des chaînes</h1>
             <div class="player" id="Plyr2">
                 <span>
                     <?php echo $p2; ?>
@@ -93,8 +104,12 @@ $p2 = "5ch00lw3b";
             if (e.keyCode == 27) {
                 generateModule();
             }
+            if (e.ctrlKey && e.code === "Space") {
+                let subConsole = new SubConsole();
+                subConsole.generate();
+            }
         })
-        document.querySelector(".deathMatch").style.display="none";
+        document.querySelector(".deathMatch").style.display = "none";
         var ctrl = {
             start: document.getElementById("start"),
             check: document.getElementById("check"),
@@ -114,8 +129,9 @@ $p2 = "5ch00lw3b";
         }
         ctrl.start.style.display = "block";
         var game = new Game("Duel", document.getElementById("question"), "<?php echo $p1; ?>", "<?php echo $p2; ?>");
+        game.updateVote();
         var bot = game.getBot();
-       
+
         bot.setCommand("!vote", function (arg, tags, channel) {
             if (game.canVote == false) {
                 bot.message(`/me ${tags.username} Vous ne pouvez pas encore voter`, channel);
@@ -132,9 +148,10 @@ $p2 = "5ch00lw3b";
                     let msg = "";
                     for (i = 0; i < 4; i++) {
                         k = Object.keys(prc[i]);
-                       msg += k + "=>" + prc[i][k] + "<br>";
+                        msg += k + "=>" + prc[i][k] + "<br>";
                     }
                     bot.message(`/me ${msg}`, channel);
+                    game.updateVote();
                 } else {
                     bot.message(`/me ${tags.username} tu a déjà voté`, channel);
                 }
@@ -146,42 +163,66 @@ $p2 = "5ch00lw3b";
             this.style.display = "none";
             game.nextManche();
             ctrl.startVote.style.display = "block";
+            game.updateConfig();
         }
         ctrl.next.onclick = function () {
             this.style.display = "none";
             ctrl.check.style.display = "none";
             ctrl.startVote.style.display = "block";
+            chat.clear();
             if (!game.nextQuestion()) {
                 if (game.getWinner() != false) {
                     console.dir(game.getWinner().winner);
+                    game.getWinner().winner.winMatch++;
                     _alert(game.getWinner().winner.name + " a gagné la manche " + game.manche);
                     document.querySelectorAll("#manche>div section[player=\"" + game.getWinner().winner.name + "\"] ul li")[game.manche - 1].classList.add("win")
                 } else {
-                    _alert("Egalité",function(){
+                    _alert("Egalité", function () {
                         game.setDeathMatch();
                     });
                     return;
-                    
+
                 }
                 if (game.nextManche() == false) {
 
                 }
 
+            }else{
+                game.updateConfig();
             }
         }
         ctrl.check.onclick = function () {
-            this.style.display="none";
-            if(game.index+1<5)
-                game.console.innerHTML="Theme de la question "+game.currentQuery[game.index+1].theme;
-         //   game.console.innerHTML += game.player[0].rep.length;
+            this.style.display = "none";
+       //     debugger;
             let rep1 = (game.player[0].rep.length > 0) ? Object.keys(game.player[0].getReponse()) : "-";
-            let rep2 = (game.player[1].rep.length > 0) ? Object.keys(game.player[1].getReponse()) : "-"
-            document.querySelector("#gain_" + game.player[0].name + " .prct").innerHTML = rep1;
-            document.querySelector("#gain_" + game.player[1].name + " .prct").innerHTML = rep2;
-            setTimeout(function () {
-                game.checkReponse();
-                ctrl.next.style.display = "block";
-            }, 3000);
+                let rep2 = (game.player[1].rep.length > 0) ? Object.keys(game.player[1].getReponse()) : "-"
+            if (game.deathMatchOn) {
+                document.querySelectorAll(".deathMatch [player] prct")[0].innerHTML = rep1;
+                document.querySelectorAll(".deathMatch [player] prct")[1].innerHTML = rep2;
+                setTimeout(function () {
+                    game.DMCheckReponse();
+                    ctrl.next.style.display = "block";
+                }, 3000);
+                
+            } else {
+                if (game.index + 1 < 5)
+                    game.console.innerHTML = "Theme de la question " + game.currentQuery[game.index + 1].theme;
+                //   game.console.innerHTML += game.player[0].rep.length;
+                
+                document.querySelector("#gain_" + game.player[0].name + " .prct").innerHTML = rep1;
+                document.querySelector("#gain_" + game.player[1].name + " .prct").innerHTML = rep2;
+                setTimeout(function () {
+                    game.checkReponse();
+                    ctrl.next.style.display = "block";
+                }, 3000);
+            }
+        }
+        function testDeathMatch(){
+            game.manche=1;
+            game.setDeathMatch();
+            ctrl.start.style.display="none";
+            ctrl.check.style.display = "block";
+            game.canVote=true;
         }
         test = function () {
             let _u = ["user1", "user2", "user3", "user4", "test1", "test2", "test4", "_player3"]
@@ -193,6 +234,7 @@ $p2 = "5ch00lw3b";
                 let alpha = "ABCD";
                 game.emulateReponse("<?php echo $p2; ?>", _u[i], alpha[getRandomInt(4)]);
             }
+            game.updateVote();
         }
     </script>
 </body>
